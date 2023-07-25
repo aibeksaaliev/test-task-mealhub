@@ -16,17 +16,13 @@
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td class="column-id">1</td>
-        <td class="column-name">Aibek</td>
-        <td class="column-email">dokaidea@gmail.com</td>
-        <td class="column-link"><nuxt-link class="comment-link" to="comments/id">Link</nuxt-link></td>
-      </tr>
-      <tr>
-        <td class="column-id">1</td>
-        <td class="column-name">Aibek</td>
-        <td class="column-email">dokaidea@gmail.com</td>
-        <td class="column-link"><nuxt-link class="comment-link" to="comments/id">Link</nuxt-link></td>
+      <tr v-for="comment in comments" :key="comment.id">
+        <td class="column-id">{{ comment.id }}</td>
+        <td class="column-name">{{ comment.name }}</td>
+        <td class="column-email">{{ comment.email }}</td>
+        <td class="column-link">
+          <nuxt-link class="comment-link" :to="`/comments/${comment.id}`">Link</nuxt-link>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -35,7 +31,21 @@
 
 <script>
 export default {
-  name: 'Comments'
+  name: 'Comments',
+  data() {
+    return {
+      comments: []
+    }
+  },
+  async asyncData({$axios}) {
+    try {
+      const response = await $axios.$get('/comments');
+      return { comments: response };
+    } catch (error) {
+      console.error(error);
+      return { comments: [] };
+    }
+  }
 }
 </script>
 
